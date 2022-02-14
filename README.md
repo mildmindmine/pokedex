@@ -1,6 +1,6 @@
 # pokedex
 
-### Simple application to display list of pokemon as a part of Appsynth
+### Simple application to display list of pokemon as a part of Appsynth's assignment
 
 #### This application contains 2 main features
 
@@ -17,7 +17,7 @@
 - Once finished loading data, display `name`, `front image`, `back image`, `weight`, and `height` of
   that pokemon
 
-#### Main dependency library used in the project:
+#### Main dependency libraries used in the project:
 
 - rxdart
 - json_annotation
