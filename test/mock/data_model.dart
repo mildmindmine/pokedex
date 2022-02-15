@@ -16,12 +16,12 @@ const expectedPokemonDetail = PokemonDetail(
 final pokemonDetailResponse = PokemonDetailsResponse(
   name: "name",
   height: 10,
-  weight: 20,
+  weight: 10,
   sprites: Sprites(
     front_default:
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png",
-    back_default:
         "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+    back_default:
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png",
   ),
 );
 
@@ -41,6 +41,14 @@ PokemonListResponse pokemonListResponse = PokemonListResponse(
 
 const expectedOutputPokemonList = PokemonList(
   hasNext: true,
+  pokemonList: [
+    PokemonListItem(name: "bulbasaur", id: "1"),
+    PokemonListItem(name: "ivysaur", id: "2")
+  ],
+);
+
+const expectedOutputPokemonListHasNextIsFalse = PokemonList(
+  hasNext: false,
   pokemonList: [
     PokemonListItem(name: "bulbasaur", id: "1"),
     PokemonListItem(name: "ivysaur", id: "2")

@@ -44,6 +44,8 @@ void main() {
 
       expectLater(viewModel.isLoading, emitsInOrder([false, true, false]));
 
+      expectLater(viewModel.hasNext, emits(true));
+
       /// Reset pokemon list, then fetch new list
       expectLater(viewModel.pokemonList,
           emitsInOrder([null, expectedOutputPokemonList.pokemonList]));
@@ -57,28 +59,6 @@ void main() {
 
       expectLater(viewModel.isLoading, emitsInOrder([false, true, false]));
       expectLater(viewModel.showError, emits(genericError.toString()));
-    });
-  });
-
-  group('getPokemonDetail', () {
-    test('When calling getPokemonDetail and got success data', () async {
-      when(() => getPokemonDetailUseCase.getPokemonDetail(any())).thenAnswer(
-          (_) async => const UseCaseResult.success(expectedPokemonDetail));
-
-      scheduleMicrotask(() => viewModel.getPokemonDetail("1"));
-
-      expectLater(viewModel.isLoading, emitsInOrder([false, true, false]));
-      expectLater(viewModel.pokemonDetail, emits(expectedPokemonDetail));
-    });
-
-    test('When calling getPokemonDetail and got error data', () async {
-      when(() => getPokemonDetailUseCase.getPokemonDetail(any()))
-          .thenAnswer((_) async => UseCaseResult.serverFailure(serverError));
-
-      scheduleMicrotask(() => viewModel.getPokemonDetail("1"));
-
-      expectLater(viewModel.isLoading, emitsInOrder([false, true, false]));
-      expectLater(viewModel.showError, emits(serverError.description));
     });
   });
 

@@ -16,6 +16,7 @@ class LandingPageViewModel {
       BehaviorSubject();
   final BehaviorSubject<PokemonDetail?> _pokemonDetail = BehaviorSubject();
   final BehaviorSubject<bool> _isLoading = BehaviorSubject.seeded(false);
+  final BehaviorSubject<bool> _hasNext = BehaviorSubject();
   final PublishSubject<String> _showError = PublishSubject();
   final PublishSubject<Object?> _openPokemonDetailSection = PublishSubject();
 
@@ -29,12 +30,11 @@ class LandingPageViewModel {
 
   Stream<Object?> get openPokemonDetailSection => _openPokemonDetailSection;
 
+  Stream<bool> get hasNext => _hasNext;
+
   /// Initial values
   int _offset = AppConstant.initialOffset;
   final int _limit = AppConstant.initialLimit;
-
-  /// Determine if there is next list to fetch or not
-  bool _hasNext = true;
 
   LandingPageViewModel(
     this._getPokemonDetailUseCase,
@@ -60,15 +60,17 @@ class LandingPageViewModel {
   }
 
   void getPokemonList([isRefresh = false]) async {
-    /// Stop fetching if there is no next data list
-    if (!_hasNext) return;
-
+    /// If it's refresh, reset variable to initial value
+    /// else no next, stop fetching if there is no next data list
     if (isRefresh) {
       _refreshToInitialValue();
+    } else if (_hasNext.valueOrNull == false) {
+      return;
     }
+
     _isLoading.add(true);
     final result =
-    await _getPokemonListUseCase.getPokemonList(_offset, _limit, isRefresh);
+        await _getPokemonListUseCase.getPokemonList(_offset, _limit, isRefresh);
     _isLoading.add(false);
 
     result.when(success: (PokemonList data) {
@@ -76,7 +78,7 @@ class LandingPageViewModel {
       prevData.addAll(data.pokemonList);
       _pokemonList.value = prevData;
       _offset += _limit;
-      _hasNext = data.hasNext;
+      _hasNext.add(data.hasNext);
     }, genericFailure: (failure) {
       _showError.add(failure.toString());
     }, serverFailure: (failure) {
@@ -89,7 +91,7 @@ class LandingPageViewModel {
     final result = await _getPokemonDetailUseCase.getPokemonDetail(id);
 
     // For better UX
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     _isLoading.add(false);
 

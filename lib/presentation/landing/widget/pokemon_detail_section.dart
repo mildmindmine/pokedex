@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
+import 'package:pokedex/presentation/landing/widget/loading_section.dart';
 import 'package:pokedex/utils/extension/generic_extension.dart';
 
 class PokemonDetailSection extends StatelessWidget {
@@ -11,15 +12,6 @@ class PokemonDetailSection extends StatelessWidget {
     this.detail,
     required this.animation,
   }) : super(key: key);
-
-  Widget _buildLoadingSection() {
-    return const Padding(
-      padding: EdgeInsets.all(24),
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
 
   Widget _buildTextWithBoldResult(
       BuildContext context, String? value, String title) {
@@ -124,8 +116,9 @@ class PokemonDetailSection extends StatelessWidget {
             child: Column(
               children: [
                 _buildHandle(context),
-                if (detail == null) _buildLoadingSection(),
-                if (detail != null) _buildPokemonInfo(context)
+                detail == null
+                    ? const LoadingSection()
+                    : _buildPokemonInfo(context),
               ],
             ),
           ),

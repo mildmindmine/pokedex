@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/utils/extension/generic_extension.dart';
 
 class Dialogs {
   Dialogs._();
@@ -30,7 +31,7 @@ class Dialogs {
             TextButton(
                 onPressed:
                     onPositiveButtonPressed ?? () => dismissDialog(context),
-                child: Text(positiveButtonText ?? 'OK')),
+                child: Text(positiveButtonText.safeUnwrapped("OK"))),
           ],
         );
       },

@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 
 @module
 abstract class NetworkModule {
-  /// Log for request and response calling from application
+  /// Log for request and response from calling api
   @lazySingleton
   LogInterceptor get logInterceptor =>
       LogInterceptor(requestBody: true, responseBody: true);

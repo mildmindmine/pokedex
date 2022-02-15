@@ -25,14 +25,14 @@ class LandingRepositoryImpl extends BaseNetworkRepository
   Future<PokemonList> getPokemonList(int offset, int limit, bool isRefresh) async {
     // Clear cache
     if (isRefresh) {
-      cachedPokemonDetail = null;
+      cachedPokemonDetail = {};
     }
 
     final response = await handle(() {
       return _landingService.getPokemonList(offset, limit);
     });
 
-    return _landingMapper.mapPokemonListItem(response);
+    return _landingMapper.mapPokemonList(response);
   }
 
   @override

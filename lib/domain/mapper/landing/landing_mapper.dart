@@ -8,7 +8,7 @@ import 'package:pokedex/utils/extension/generic_extension.dart';
 
 @injectable
 class LandingMapper {
-  PokemonList mapPokemonListItem(PokemonListResponse response) {
+  PokemonList mapPokemonList(PokemonListResponse response) {
     final pokemonList = response.results?.map((pokemon) {
           assert(pokemon.name != null, 'pokemon name should not be null');
           assert(pokemon.url != null, 'pokemon url should not be null');

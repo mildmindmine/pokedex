@@ -2,22 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
-import 'package:pokedex/domain/use_case/landing/get_pokemon_detail_use_case.dart';
-import 'package:pokedex/domain/use_case/landing/get_pokemon_list_use_case.dart';
 import 'package:pokedex/presentation/landing/landing_page_view_model.dart';
 import 'package:pokedex/presentation/landing/widget/empty_page.dart';
+import 'package:pokedex/presentation/landing/widget/loading_section.dart';
 import 'package:pokedex/presentation/landing/widget/pokemon_detail_section.dart';
 import 'package:pokedex/utils/dialogs.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LandingPage extends StatefulWidget {
-  final GetPokemonListUseCase? getPokemonListUseCase;
-  final GetPokemonDetailUseCase? getPokemonDetailUseCase;
-
   const LandingPage({
     Key? key,
-    this.getPokemonListUseCase,
-    this.getPokemonDetailUseCase,
   }) : super(key: key);
 
   @override
@@ -30,6 +24,7 @@ class _LandingPageState extends State<LandingPage>
 
   // Variable
   bool _isLoading = false;
+  bool _hasNext = true;
   late final Animation<double> _animation;
 
   // Controllers
@@ -40,8 +35,9 @@ class _LandingPageState extends State<LandingPage>
   void initState() {
     _setAnimationController();
     _subscribeToViewModel();
-    _viewModel.getPokemonList(true);
     _handleInfiniteLoad();
+
+    _viewModel.getPokemonList();
     super.initState();
   }
 
@@ -69,9 +65,10 @@ class _LandingPageState extends State<LandingPage>
   }
 
   void _scrollListener() {
-    /// Fetch new list when user scroll to 90% of listview height
-    if (_scrollController.position.pixels >
-        _scrollController.position.maxScrollExtent * 0.9) {
+    /// Fetch new list when user scroll to the end of listview
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoading) {
       _viewModel.getPokemonList();
     }
   }
@@ -112,26 +109,21 @@ class _LandingPageState extends State<LandingPage>
         },
       );
     }).addTo(_viewModel.compositeSubscription);
+
+    _viewModel.hasNext.listen((hasNext) {
+      setState(() {
+        _hasNext = hasNext;
+      });
+    }).addTo(_viewModel.compositeSubscription);
   }
 
-  Widget _buildLoadingSection() {
-    return const Padding(
-      padding: EdgeInsets.all(16),
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
-  /// If listview height is less than 90% of the screen, will display loading
-  /// section at the bottom of the list when fetching
   int _checkScrollContent(int displayListLength) {
-    if (_scrollController.positions.isNotEmpty &&
-        _scrollController.position.maxScrollExtent <
-            MediaQuery.of(context).size.height * 0.9) {
-      return displayListLength;
+    if (_hasNext) {
+      // If has more to fetch will be adding loading section at the end of the list
+      return displayListLength + 1;
     }
-    return displayListLength + 1;
+
+    return displayListLength;
   }
 
   @override
@@ -154,8 +146,8 @@ class _LandingPageState extends State<LandingPage>
                   itemCount: _checkScrollContent(displayList.length),
                   itemBuilder: (context, index) {
                     /// Return loading indicator section when it start to load
-                    if (index >= displayList.length) {
-                      return _isLoading ? _buildLoadingSection() : Container();
+                    if (index == displayList.length) {
+                      return const LoadingSection();
                     }
 
                     /// Build pokemon list item
@@ -172,7 +164,7 @@ class _LandingPageState extends State<LandingPage>
             }
 
             return SizedBox.expand(
-              child: _isLoading ? _buildLoadingSection() : const EmptyPage(),
+              child: _isLoading ? const LoadingSection() : const EmptyPage(),
             );
           },
         ),
