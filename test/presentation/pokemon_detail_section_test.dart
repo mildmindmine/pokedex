@@ -40,6 +40,9 @@ void main() {
         name:
             'Given pokemon detail finish loading and send data to this section',
         onCreate: (scenarioWidgetKey) async {
+          /// Waiting for animation to render
+          await tester.pumpAndSettle();
+
           /// Should display mock name
           final nameTitle = find.descendant(
               of: find.byKey(scenarioWidgetKey), matching: find.text("name"));
