@@ -2,23 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/utils/extension/generic_extension.dart';
 
-class PokemonDetailSection extends StatefulWidget {
+class PokemonDetailSection extends StatelessWidget {
   final PokemonDetail? detail;
-  final bool isLoading;
 
   const PokemonDetailSection({
     Key? key,
     this.detail,
-    this.isLoading = false,
   }) : super(key: key);
-
-  @override
-  State<PokemonDetailSection> createState() => _PokemonDetailSectionState();
-}
-
-class _PokemonDetailSectionState extends State<PokemonDetailSection> {
-  bool _loadingFrontImg = true;
-  bool _loadingBackImg = true;
 
   Widget _buildLoadingSection() {
     return const Padding(
@@ -54,13 +44,27 @@ class _PokemonDetailSectionState extends State<PokemonDetailSection> {
     );
   }
 
+  Widget _buildImage(BuildContext context, String url) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.4,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Image.network(
+          url,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildImageCannotLoad(),
+        ),
+      ),
+    );
+  }
+
   Widget _buildPokemonInfo(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           Text(
-            (widget.detail?.name).safeUnwrapped(),
+            (detail?.name).safeUnwrapped(),
             style: Theme.of(context).textTheme.headline5,
           ),
           Padding(
@@ -68,30 +72,8 @@ class _PokemonDetailSectionState extends State<PokemonDetailSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 4,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.network(
-                      (widget.detail?.frontImgUrl).safeUnwrapped(),
-                      fit: BoxFit.fill,
-                      errorBuilder: (context, error, stackTrace) =>
-                          _buildImageCannotLoad(),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.network(
-                      (widget.detail?.backImgUrl).safeUnwrapped(),
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          _buildImageCannotLoad(),
-                    ),
-                  ),
-                ),
+                _buildImage(context, (detail?.frontImgUrl).safeUnwrapped()),
+                _buildImage(context, (detail?.backImgUrl).safeUnwrapped())
               ],
             ),
           ),
@@ -100,7 +82,7 @@ class _PokemonDetailSectionState extends State<PokemonDetailSection> {
             children: [
               _buildTextWithBoldResult(
                 context,
-                widget.detail?.weight.toString(),
+                detail?.weight.toString(),
                 "Weight",
               ),
               const SizedBox(
@@ -108,7 +90,7 @@ class _PokemonDetailSectionState extends State<PokemonDetailSection> {
               ),
               _buildTextWithBoldResult(
                 context,
-                widget.detail?.height.toString(),
+                detail?.height.toString(),
                 "Height",
               ),
             ],
@@ -134,13 +116,14 @@ class _PokemonDetailSectionState extends State<PokemonDetailSection> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHandle(context),
-          if (widget.detail == null) _buildLoadingSection(),
-          if (widget.detail != null) _buildPokemonInfo(context)
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildHandle(context),
+            if (detail == null) _buildLoadingSection(),
+            if (detail != null) _buildPokemonInfo(context)
+          ],
+        ),
       ),
     );
   }

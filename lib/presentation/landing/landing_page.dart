@@ -73,7 +73,6 @@ class _LandingPageState extends State<LandingPage> {
             builder: (BuildContext context, snapshot) {
               return PokemonDetailSection(
                 detail: snapshot.data as PokemonDetail?,
-                isLoading: _isLoading,
               );
             },
           );
