@@ -28,10 +28,8 @@ void main() {
   final genericError = Exception("Test Error");
 
   setUp(() {
-    viewModel = LandingPageViewModel(
-      getPokemonListUseCase: getPokemonListUseCase,
-      getPokemonDetailUseCase: getPokemonDetailUseCase,
-    );
+    viewModel =
+        LandingPageViewModel(getPokemonDetailUseCase, getPokemonListUseCase);
     registerFallbackValue(expectedPokemonDetail);
     registerFallbackValue(expectedOutputPokemonList);
   });

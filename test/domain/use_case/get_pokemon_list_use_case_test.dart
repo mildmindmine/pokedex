@@ -15,7 +15,7 @@ void main() {
   late GetPokemonListUseCase useCase;
 
   setUp(() {
-    useCase = GetPokemonListUseCaseImpl(repository: repository);
+    useCase = GetPokemonListUseCaseImpl(repository);
   });
 
   test('Get pokemon list with success data', () async {

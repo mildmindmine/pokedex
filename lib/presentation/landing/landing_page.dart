@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
 import 'package:pokedex/domain/use_case/landing/get_pokemon_detail_use_case.dart';
@@ -25,7 +26,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage>
     with TickerProviderStateMixin {
-  late final LandingPageViewModel _viewModel;
+  final LandingPageViewModel _viewModel = GetIt.I<LandingPageViewModel>();
 
   // Variable
   bool _isLoading = false;
@@ -37,10 +38,6 @@ class _LandingPageState extends State<LandingPage>
 
   @override
   void initState() {
-    _viewModel = LandingPageViewModel(
-      getPokemonDetailUseCase: widget.getPokemonDetailUseCase,
-      getPokemonListUseCase: widget.getPokemonListUseCase,
-    );
     _setAnimationController();
     _subscribeToViewModel();
     _viewModel.getPokemonList(true);

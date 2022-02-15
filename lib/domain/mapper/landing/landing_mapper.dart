@@ -1,10 +1,12 @@
-import 'package:path/path.dart' as Path;
+import 'package:injectable/injectable.dart';
+import 'package:path/path.dart' as path;
 import 'package:pokedex/data/model/detail_section/pokemon_details_response.dart';
 import 'package:pokedex/data/model/landing/pokemon_list_response.dart';
 import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
 import 'package:pokedex/utils/extension/generic_extension.dart';
 
+@injectable
 class LandingMapper {
   PokemonList mapPokemonListItem(PokemonListResponse response) {
     final pokemonList = response.results?.map((pokemon) {
@@ -12,7 +14,7 @@ class LandingMapper {
           assert(pokemon.url != null, 'pokemon url should not be null');
 
           // Extract id from URL
-          final String pokemonId = Path.basename(pokemon.url as String);
+          final String pokemonId = path.basename(pokemon.url as String);
 
           return PokemonListItem(
             name: pokemon.name.safeUnwrapped(),

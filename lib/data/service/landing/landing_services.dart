@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
-import 'package:pokedex/common/constants.dart';
+import 'package:injectable/injectable.dart';
 import 'package:pokedex/data/model/detail_section/pokemon_details_response.dart';
 import 'package:pokedex/data/model/landing/pokemon_list_response.dart';
 import 'package:retrofit/http.dart';
 
 part 'landing_services.g.dart';
 
-@RestApi(baseUrl: AppConstant.baseUrl)
+@singleton
+@RestApi()
 abstract class LandingService {
-  factory LandingService(Dio dio, {String baseUrl}) = _LandingService;
+  @factoryMethod
+  factory LandingService(Dio dio) = _LandingService;
 
   @GET('/v2/pokemon')
   Future<PokemonListResponse> getPokemonList(

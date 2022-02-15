@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:pokedex/common/constants.dart';
 import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
@@ -5,13 +6,14 @@ import 'package:pokedex/domain/use_case/landing/get_pokemon_detail_use_case.dart
 import 'package:pokedex/domain/use_case/landing/get_pokemon_list_use_case.dart';
 import 'package:rxdart/rxdart.dart';
 
+@injectable
 class LandingPageViewModel {
   final CompositeSubscription compositeSubscription = CompositeSubscription();
-  late final GetPokemonDetailUseCase _getPokemonDetailUseCase;
-  late final GetPokemonListUseCase _getPokemonListUseCase;
+  final GetPokemonDetailUseCase _getPokemonDetailUseCase;
+  final GetPokemonListUseCase _getPokemonListUseCase;
 
   final BehaviorSubject<List<PokemonListItem>?> _pokemonList =
-  BehaviorSubject();
+      BehaviorSubject();
   final BehaviorSubject<PokemonDetail?> _pokemonDetail = BehaviorSubject();
   final BehaviorSubject<bool> _isLoading = BehaviorSubject.seeded(false);
   final PublishSubject<String> _showError = PublishSubject();
@@ -34,16 +36,10 @@ class LandingPageViewModel {
   /// Determine if there is next list to fetch or not
   bool _hasNext = true;
 
-  /// Parameters for testing (and in case there is dependency injection)
-  LandingPageViewModel({
-    GetPokemonListUseCase? getPokemonListUseCase,
-    GetPokemonDetailUseCase? getPokemonDetailUseCase,
-  }) {
-    _getPokemonListUseCase =
-        getPokemonListUseCase ?? GetPokemonListUseCaseImpl();
-    _getPokemonDetailUseCase =
-        getPokemonDetailUseCase ?? GetPokemonDetailUseCaseImpl();
-  }
+  LandingPageViewModel(
+    this._getPokemonDetailUseCase,
+    this._getPokemonListUseCase,
+  );
 
   void onListTileTapped(String id) {
     getPokemonDetail(id);
@@ -72,7 +68,7 @@ class LandingPageViewModel {
     }
     _isLoading.add(true);
     final result =
-        await _getPokemonListUseCase.getPokemonList(_offset, _limit, isRefresh);
+    await _getPokemonListUseCase.getPokemonList(_offset, _limit, isRefresh);
     _isLoading.add(false);
 
     result.when(success: (PokemonList data) {

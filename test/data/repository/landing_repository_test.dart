@@ -6,13 +6,17 @@ import 'package:pokedex/data/model/detail_section/pokemon_details_response.dart'
 import 'package:pokedex/data/model/landing/pokemon_list_response.dart';
 import 'package:pokedex/data/repository/landing/landing_repository.dart';
 import 'package:pokedex/data/service/landing/landing_services.dart';
+import 'package:pokedex/domain/mapper/landing/landing_mapper.dart';
 import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
 
 class MockLandingService extends Mock implements LandingService {}
 
+class MockLandingMapper extends Mock implements LandingMapper {}
+
 void main() {
   final LandingService service = MockLandingService();
+  final LandingMapper mapper = MockLandingMapper();
   late LandingRepository repository;
 
   final pokemonDetailResponse = PokemonDetailsResponse(
@@ -44,8 +48,7 @@ void main() {
   );
 
   setUp(() {
-    /// MOCK only service for success response
-    repository = LandingRepositoryImpl(service: service);
+    repository = LandingRepositoryImpl(mapper, service);
   });
 
   test('return successful result after call GET pokemon list', () async {

@@ -27,6 +27,5 @@
 - freezed_annotation
 - dio
 - retrofit
-
-(For the minimal external lib, I've decided not to use getIt or injection package since the project
-is quite small and doesn't have much dependency).
+- injectable
+- get_it

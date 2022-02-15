@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:pokedex/common/network/base_network_repository.dart';
 import 'package:pokedex/data/service/landing/landing_services.dart';
 import 'package:pokedex/domain/mapper/landing/landing_mapper.dart';
@@ -11,6 +11,7 @@ abstract class LandingRepository {
   Future<PokemonDetail> getPokemonDetail(String id);
 }
 
+@Singleton(as: LandingRepository)
 class LandingRepositoryImpl extends BaseNetworkRepository
     implements LandingRepository {
   late final LandingService _landingService;
@@ -18,22 +19,10 @@ class LandingRepositoryImpl extends BaseNetworkRepository
 
   Map<String, PokemonDetail>? cachedPokemonDetail = {};
 
-  /// Parameters for testing (and in case there is dependency injection)
-  LandingRepositoryImpl({LandingMapper? mapper, LandingService? service}) {
-    _landingMapper = mapper ?? LandingMapper();
-    _landingService = service ??
-        LandingService(
-          Dio(
-            BaseOptions(
-              contentType: "application/json",
-            ),
-          ),
-        );
-  }
+  LandingRepositoryImpl(this._landingMapper, this._landingService);
 
   @override
-  Future<PokemonList> getPokemonList(
-      int offset, int limit, bool isRefresh) async {
+  Future<PokemonList> getPokemonList(int offset, int limit, bool isRefresh) async {
     // Clear cache
     if (isRefresh) {
       cachedPokemonDetail = null;
