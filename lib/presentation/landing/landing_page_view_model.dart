@@ -69,8 +69,13 @@ class LandingPageViewModel {
     }
 
     _isLoading.add(true);
-    final result =
-        await _getPokemonListUseCase.getPokemonList(_offset, _limit, isRefresh);
+
+    final result = await _getPokemonListUseCase.getPokemonList(
+      _offset,
+      _limit,
+      isRefresh,
+    );
+
     _isLoading.add(false);
 
     result.when(success: (PokemonList data) {
@@ -88,10 +93,8 @@ class LandingPageViewModel {
 
   void getPokemonDetail(String id) async {
     _isLoading.add(true);
-    final result = await _getPokemonDetailUseCase.getPokemonDetail(id);
 
-    // For better UX
-    await Future.delayed(const Duration(milliseconds: 100));
+    final result = await _getPokemonDetailUseCase.getPokemonDetail(id);
 
     _isLoading.add(false);
 

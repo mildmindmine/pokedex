@@ -109,7 +109,7 @@ class PokemonDetailSection extends StatelessWidget {
       ),
       child: SingleChildScrollView(
         child: AnimatedSize(
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 400),
           curve: Curves.fastOutSlowIn,
           child: FadeTransition(
             opacity: animation,

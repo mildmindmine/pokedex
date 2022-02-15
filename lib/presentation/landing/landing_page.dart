@@ -52,7 +52,7 @@ class _LandingPageState extends State<LandingPage>
 
   void _setAnimationController() {
     _animationController = BottomSheet.createAnimationController(this);
-    _animationController.duration = const Duration(milliseconds: 300);
+    _animationController.duration = const Duration(milliseconds: 200);
     _animationController.reverseDuration = const Duration(milliseconds: 200);
     _animation = CurvedAnimation(
       parent: _animationController,
