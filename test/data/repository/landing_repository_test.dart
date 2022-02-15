@@ -28,11 +28,20 @@ void main() {
     height: 10,
   );
 
-  final pokemonListResponse = PokemonListResponse(results: [
-    Pokemon(name: "name", url: "https://pokeapi.co/api/v2/pokemon/1/"),
-  ]);
+  final pokemonListResponse = PokemonListResponse(
+    next: "abc",
+    results: [
+      PokemonResponse(
+        name: "name",
+        url: "https://pokeapi.co/api/v2/pokemon/1/",
+      ),
+    ],
+  );
 
-  const pokemonListExpectedResult = [PokemonListItem(name: "name", id: "1")];
+  const pokemonListExpectedResult = PokemonList(
+    hasNext: true,
+    pokemonList: [PokemonListItem(name: "name", id: "1")],
+  );
 
   setUp(() {
     /// MOCK only service for success response

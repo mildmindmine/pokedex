@@ -5,18 +5,40 @@ import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
 import 'package:test/test.dart';
 
+import '../../mock/data_model.dart';
+
 void main() {
   final mapper = LandingMapper();
 
-  test('map from PokemonListResponse to List<PokemonListItem>', () {
-    final pokemonListResponse = PokemonListResponse(results: [
-      Pokemon(name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon/1/"),
-      Pokemon(name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon/2")
-    ]);
-    const expectedOutput = [
-      PokemonListItem(name: "bulbasaur", id: "1"),
-      PokemonListItem(name: "ivysaur", id: "2")
-    ];
+  test('map from PokemonListResponse to PokemonList', () {
+    final output = mapper.mapPokemonListItem(pokemonListResponse);
+
+    expect(output, equals(expectedOutputPokemonList));
+  });
+
+  test(
+      'map from PokemonListResponse to PokemonList, when next is null,'
+      ' hasNext should be false', () {
+    PokemonListResponse pokemonListResponse = PokemonListResponse(
+      results: [
+        PokemonResponse(
+          name: "bulbasaur",
+          url: "https://pokeapi.co/api/v2/pokemon/1/",
+        ),
+        PokemonResponse(
+          name: "ivysaur",
+          url: "https://pokeapi.co/api/v2/pokemon/2",
+        )
+      ],
+    );
+
+    const expectedOutput = PokemonList(
+      hasNext: false,
+      pokemonList: [
+        PokemonListItem(name: "bulbasaur", id: "1"),
+        PokemonListItem(name: "ivysaur", id: "2")
+      ],
+    );
     final output = mapper.mapPokemonListItem(pokemonListResponse);
 
     expect(output, equals(expectedOutput));
@@ -45,6 +67,6 @@ void main() {
     final pokemonListResponse = PokemonListResponse();
     final output = mapper.mapPokemonListItem(pokemonListResponse);
 
-    expect(output, equals([]));
+    expect(output, equals(const PokemonList(hasNext: false, pokemonList: [])));
   });
 }

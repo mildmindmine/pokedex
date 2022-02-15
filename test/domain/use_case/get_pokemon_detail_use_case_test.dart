@@ -6,6 +6,8 @@ import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/domain/use_case/common/use_case_result.dart';
 import 'package:pokedex/domain/use_case/landing/get_pokemon_detail_use_case.dart';
 
+import '../../mock/data_model.dart';
+
 class MockLandingRepository extends Mock implements LandingRepository {}
 
 void main() {
@@ -16,23 +18,15 @@ void main() {
     useCase = GetPokemonDetailUseCaseImpl(repository: repository);
   });
 
-  const successData = PokemonDetail(
-    name: "name",
-    frontImgUrl: "frontImgUrl",
-    backImgUrl: "backImgUrl",
-    weight: 10,
-    height: 10,
-  );
-
   test('Get pokemon detail with success data', () async {
     when(() => repository.getPokemonDetail(any()))
-        .thenAnswer((_) async => successData);
+        .thenAnswer((_) async => expectedPokemonDetail);
 
     final result = await useCase.getPokemonDetail('1');
 
     verify(() => repository.getPokemonDetail(any()));
     verifyNoMoreInteractions(repository);
-    expect(result, equals(const UseCaseResult.success(successData)));
+    expect(result, equals(const UseCaseResult.success(expectedPokemonDetail)));
   });
 
   test(

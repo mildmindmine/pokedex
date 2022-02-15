@@ -4,12 +4,12 @@ import 'package:pokedex/domain/use_case/common/handle_usecase_result.dart';
 import 'package:pokedex/domain/use_case/common/use_case_result.dart';
 
 abstract class GetPokemonListUseCase {
-  Future<UseCaseResult<List<PokemonListItem>>> getPokemonList(
+  Future<UseCaseResult<PokemonList>> getPokemonList(
       int offset, int limit, bool isRefresh);
 }
 
 class GetPokemonListUseCaseImpl
-    with HandleUseCaseResult<List<PokemonListItem>>
+    with HandleUseCaseResult<PokemonList>
     implements GetPokemonListUseCase {
   late final LandingRepository _landingRepository;
 
@@ -19,7 +19,7 @@ class GetPokemonListUseCaseImpl
   }
 
   @override
-  Future<UseCaseResult<List<PokemonListItem>>> getPokemonList(
+  Future<UseCaseResult<PokemonList>> getPokemonList(
       int offset, int limit, bool isRefresh) async {
     return handleUseCaseResult(
         () => _landingRepository.getPokemonList(offset, limit, isRefresh));

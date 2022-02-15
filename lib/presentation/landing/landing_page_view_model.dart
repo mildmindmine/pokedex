@@ -27,9 +27,12 @@ class LandingPageViewModel {
 
   Stream<Object?> get openPokemonDetailSection => _openPokemonDetailSection;
 
-  // Initial values
+  /// Initial values
   int _offset = AppConstant.initialOffset;
   final int _limit = AppConstant.initialLimit;
+
+  /// Determine if there is next list to fetch or not
+  bool _hasNext = true;
 
   /// Parameters for testing (and in case there is dependency injection)
   LandingPageViewModel({
@@ -61,19 +64,23 @@ class LandingPageViewModel {
   }
 
   void getPokemonList([isRefresh = false]) async {
+    /// Stop fetching if there is no next data list
+    if (!_hasNext) return;
+
     if (isRefresh) {
       _refreshToInitialValue();
     }
     _isLoading.add(true);
     final result =
-    await _getPokemonListUseCase.getPokemonList(_offset, _limit, isRefresh);
+        await _getPokemonListUseCase.getPokemonList(_offset, _limit, isRefresh);
     _isLoading.add(false);
 
-    result.when(success: (List<PokemonListItem> data) {
+    result.when(success: (PokemonList data) {
       final prevData = _pokemonList.valueOrNull ?? [];
-      prevData.addAll(data);
+      prevData.addAll(data.pokemonList);
       _pokemonList.value = prevData;
       _offset += _limit;
+      _hasNext = data.hasNext;
     }, genericFailure: (failure) {
       _showError.add(failure.toString());
     }, serverFailure: (failure) {
@@ -84,6 +91,10 @@ class LandingPageViewModel {
   void getPokemonDetail(String id) async {
     _isLoading.add(true);
     final result = await _getPokemonDetailUseCase.getPokemonDetail(id);
+
+    // For better UX
+    await Future.delayed(const Duration(milliseconds: 200));
+
     _isLoading.add(false);
 
     result.when(success: (PokemonDetail data) {

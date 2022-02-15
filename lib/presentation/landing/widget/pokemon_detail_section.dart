@@ -4,10 +4,12 @@ import 'package:pokedex/utils/extension/generic_extension.dart';
 
 class PokemonDetailSection extends StatelessWidget {
   final PokemonDetail? detail;
+  final Animation<double> animation;
 
   const PokemonDetailSection({
     Key? key,
     this.detail,
+    required this.animation,
   }) : super(key: key);
 
   Widget _buildLoadingSection() {
@@ -45,8 +47,7 @@ class PokemonDetailSection extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context, String url) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.4,
+    return Expanded(
       child: AspectRatio(
         aspectRatio: 1,
         child: Image.network(
@@ -105,24 +106,29 @@ class PokemonDetailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Container(
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
         ),
       ),
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHandle(context),
-            if (detail == null) _buildLoadingSection(),
-            if (detail != null) _buildPokemonInfo(context)
-          ],
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.fastOutSlowIn,
+          child: FadeTransition(
+            opacity: animation,
+            child: Column(
+              children: [
+                _buildHandle(context),
+                if (detail == null) _buildLoadingSection(),
+                if (detail != null) _buildPokemonInfo(context)
+              ],
+            ),
+          ),
         ),
       ),
     );

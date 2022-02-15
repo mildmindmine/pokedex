@@ -4,24 +4,25 @@ part 'pokemon_list_response.g.dart';
 
 @JsonSerializable()
 class PokemonListResponse {
-  final List<Pokemon>? results;
+  final String? next;
+  final List<PokemonResponse>? results;
 
-  PokemonListResponse({this.results});
+  PokemonListResponse({this.next, this.results});
 
   factory PokemonListResponse.fromJson(Map<String, dynamic> json) =>
       _$PokemonListResponseFromJson(json);
 }
 
 @JsonSerializable()
-class Pokemon {
+class PokemonResponse {
   final String? name;
   final String? url;
 
-  Pokemon({
+  PokemonResponse({
     this.name,
     this.url,
   });
 
-  factory Pokemon.fromJson(Map<String, dynamic> json) =>
-      _$PokemonFromJson(json);
+  factory PokemonResponse.fromJson(Map<String, dynamic> json) =>
+      _$PokemonResponseFromJson(json);
 }

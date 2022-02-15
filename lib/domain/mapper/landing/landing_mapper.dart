@@ -6,8 +6,8 @@ import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
 import 'package:pokedex/utils/extension/generic_extension.dart';
 
 class LandingMapper {
-  List<PokemonListItem> mapPokemonListItem(PokemonListResponse response) {
-    return response.results?.map((pokemon) {
+  PokemonList mapPokemonListItem(PokemonListResponse response) {
+    final pokemonList = response.results?.map((pokemon) {
           assert(pokemon.name != null, 'pokemon name should not be null');
           assert(pokemon.url != null, 'pokemon url should not be null');
 
@@ -20,6 +20,11 @@ class LandingMapper {
           );
         }).toList() ??
         []; // If the value come as null, default will be empty list
+
+    return PokemonList(
+      hasNext: response.next != null,
+      pokemonList: pokemonList,
+    );
   }
 
   PokemonDetail mapPokemonDetail(PokemonDetailsResponse response) {

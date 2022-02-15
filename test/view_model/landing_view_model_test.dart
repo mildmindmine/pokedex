@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pokedex/common/network/error/server_error.dart';
-import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
-import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
 import 'package:pokedex/domain/use_case/common/use_case_result.dart';
 import 'package:pokedex/domain/use_case/landing/get_pokemon_detail_use_case.dart';
 import 'package:pokedex/domain/use_case/landing/get_pokemon_list_use_case.dart';
 import 'package:pokedex/presentation/landing/landing_page_view_model.dart';
+
+import '../mock/data_model.dart';
 
 class MockGetPokemonDetailUseCase extends Mock
     implements GetPokemonDetailUseCase {}
@@ -22,17 +22,6 @@ void main() {
       MockGetPokemonListUseCase();
   late LandingPageViewModel viewModel;
 
-  /// Variables
-  const pokemonDetail = PokemonDetail(
-    name: "name",
-    frontImgUrl: "frontImgUrl",
-    backImgUrl: "backImgUrl",
-    weight: 10,
-    height: 10,
-  );
-
-  const pokemonList = [PokemonListItem(name: "name", id: "1")];
-
   final serverError =
       ServerError(message: "message", description: "description");
 
@@ -43,21 +32,23 @@ void main() {
       getPokemonListUseCase: getPokemonListUseCase,
       getPokemonDetailUseCase: getPokemonDetailUseCase,
     );
-    registerFallbackValue(pokemonList);
-    registerFallbackValue(pokemonDetail);
+    registerFallbackValue(expectedPokemonDetail);
+    registerFallbackValue(expectedOutputPokemonList);
   });
 
   group('getPokemonList', () {
     test('When calling getPokemonList and got success data', () async {
       when(() => getPokemonListUseCase.getPokemonList(any(), any(), any()))
-          .thenAnswer((_) async => const UseCaseResult.success(pokemonList));
+          .thenAnswer((_) async =>
+              const UseCaseResult.success(expectedOutputPokemonList));
 
       scheduleMicrotask(() => viewModel.getPokemonList(true));
 
       expectLater(viewModel.isLoading, emitsInOrder([false, true, false]));
 
       /// Reset pokemon list, then fetch new list
-      expectLater(viewModel.pokemonList, emitsInOrder([null, pokemonList]));
+      expectLater(viewModel.pokemonList,
+          emitsInOrder([null, expectedOutputPokemonList.pokemonList]));
     });
 
     test('When calling getPokemonList and got error data', () async {
@@ -73,13 +64,13 @@ void main() {
 
   group('getPokemonDetail', () {
     test('When calling getPokemonDetail and got success data', () async {
-      when(() => getPokemonDetailUseCase.getPokemonDetail(any()))
-          .thenAnswer((_) async => const UseCaseResult.success(pokemonDetail));
+      when(() => getPokemonDetailUseCase.getPokemonDetail(any())).thenAnswer(
+          (_) async => const UseCaseResult.success(expectedPokemonDetail));
 
       scheduleMicrotask(() => viewModel.getPokemonDetail("1"));
 
       expectLater(viewModel.isLoading, emitsInOrder([false, true, false]));
-      expectLater(viewModel.pokemonDetail, emits(pokemonDetail));
+      expectLater(viewModel.pokemonDetail, emits(expectedPokemonDetail));
     });
 
     test('When calling getPokemonDetail and got error data', () async {
@@ -95,13 +86,13 @@ void main() {
 
   group('getPokemonDetail', () {
     test('When calling getPokemonDetail and got success data', () async {
-      when(() => getPokemonDetailUseCase.getPokemonDetail(any()))
-          .thenAnswer((_) async => const UseCaseResult.success(pokemonDetail));
+      when(() => getPokemonDetailUseCase.getPokemonDetail(any())).thenAnswer(
+          (_) async => const UseCaseResult.success(expectedPokemonDetail));
 
       scheduleMicrotask(() => viewModel.getPokemonDetail("1"));
 
       expectLater(viewModel.isLoading, emitsInOrder([false, true, false]));
-      expectLater(viewModel.pokemonDetail, emits(pokemonDetail));
+      expectLater(viewModel.pokemonDetail, emits(expectedPokemonDetail));
     });
 
     test('When calling getPokemonDetail and got error data', () async {
@@ -128,13 +119,13 @@ void main() {
     test(
         'When calling onListTileTapped, should get pokemon detail of the selected id and open the pokemon detail section',
         () async {
-      when(() => getPokemonDetailUseCase.getPokemonDetail(any()))
-          .thenAnswer((_) async => const UseCaseResult.success(pokemonDetail));
+      when(() => getPokemonDetailUseCase.getPokemonDetail(any())).thenAnswer(
+          (_) async => const UseCaseResult.success(expectedPokemonDetail));
 
       scheduleMicrotask(() => viewModel.onListTileTapped("1"));
 
       expectLater(viewModel.openPokemonDetailSection, emits(null));
-      expectLater(viewModel.pokemonDetail, emits(pokemonDetail));
+      expectLater(viewModel.pokemonDetail, emits(expectedPokemonDetail));
     });
   });
 }

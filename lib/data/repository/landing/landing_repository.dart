@@ -6,8 +6,7 @@ import 'package:pokedex/domain/model/detail_section/pokemon_detail.dart';
 import 'package:pokedex/domain/model/landing/pokemon_list_item.dart';
 
 abstract class LandingRepository {
-  Future<List<PokemonListItem>> getPokemonList(
-      int offset, int limit, bool isRefresh);
+  Future<PokemonList> getPokemonList(int offset, int limit, bool isRefresh);
 
   Future<PokemonDetail> getPokemonDetail(String id);
 }
@@ -33,7 +32,7 @@ class LandingRepositoryImpl extends BaseNetworkRepository
   }
 
   @override
-  Future<List<PokemonListItem>> getPokemonList(
+  Future<PokemonList> getPokemonList(
       int offset, int limit, bool isRefresh) async {
     // Clear cache
     if (isRefresh) {
