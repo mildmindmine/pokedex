@@ -14,7 +14,6 @@ class GetPokemonDetailUseCaseImpl
     implements GetPokemonDetailUseCase {
   final LandingRepository _landingRepository;
 
-  /// Parameter for testing (and in case there is dependency injection)
   GetPokemonDetailUseCaseImpl(this._landingRepository);
 
   @override
